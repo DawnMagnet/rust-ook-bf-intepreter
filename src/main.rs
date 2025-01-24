@@ -193,19 +193,19 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Run brainfuck code
+    /// Run brainfuck code(alias: b)
     #[command(alias = "b")]
     Brainfuck {
         /// Input file (use - for stdin)
         file: String,
     },
-    /// Run ook code
+    /// Run ook code(alias: o)
     #[command(alias = "o")]
     Ook {
         /// Input file (use - for stdin)
         file: String,
     },
-    /// Run in short ook mode
+    /// Run in short ook mode(alias: so)
     #[command(alias = "so")]
     ShortOok {
         /// Input file (use - for stdin)
