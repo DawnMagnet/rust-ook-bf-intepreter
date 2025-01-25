@@ -7,7 +7,7 @@ license = "MIT"
 authors = ["DawnMagnet"]
 repository = "https://github.com/DawnMagnet/rust-ook-bf-intepreter"
 readme = "README.md"
-keywords = ["brainfuck", "ook", "shortook", "interpreter", "cli", "rust"]
+keywords = ["brainfuck", "ook", "interpreter", "cli", "rust"]
 categories = ["development-tools", "command-line-utilities"]
 
 [dependencies]
