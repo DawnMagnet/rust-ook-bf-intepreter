@@ -4,18 +4,17 @@ use std::fs;
 use std::io::Read;
 use std::path::Path;
 
-const MAX_DATA_SIZE: usize = 30000;
-const MAX_OUTPUT_SIZE: usize = 10000;
 struct Intepreter {
     code: Vec<u8>,
     data: Vec<u8>,
     match_stack: Vec<usize>,
     code_ptr: usize,
     data_ptr: usize,
+    max_output_size: usize,
 }
 
 impl Intepreter {
-    fn new(code: Vec<u8>) -> Self {
+    fn new(code: Vec<u8>, max_data_size: usize, max_output_size: usize) -> Self {
         debug!("Creating new interpreter with code length: {}", code.len());
         let mut match_stack = vec![0; code.len()];
         let mut stack = Vec::new();
@@ -40,16 +39,17 @@ impl Intepreter {
 
         Intepreter {
             code,
-            data: vec![0; MAX_DATA_SIZE],
+            data: vec![0; max_data_size],
             code_ptr: 0,
-            data_ptr: MAX_DATA_SIZE / 2,
+            data_ptr: max_data_size / 2,
             match_stack,
+            max_output_size,
         }
     }
 
     fn run(&mut self) -> String {
         info!("Starting interpreter execution");
-        let mut output = Vec::with_capacity(MAX_OUTPUT_SIZE);
+        let mut output = Vec::with_capacity(self.max_output_size);
 
         while self.code_ptr < self.code.len() {
             debug!(
@@ -178,7 +178,7 @@ mod tests {
         let code = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.";
         let expected = "Hello World!\n";
         let bytecode = brainfuck_to_bytecode(code);
-        let mut interpreter = Intepreter::new(bytecode);
+        let mut interpreter = Intepreter::new(bytecode, 50000, 50000);
         let output = interpreter.run();
         assert_eq!(output, expected);
     }
@@ -189,23 +189,32 @@ mod tests {
 struct Cli {
     #[command(subcommand)]
     command: Commands,
+
+    #[arg(short, long, default_value_t = false)]
+    verbose: bool,
+
+    #[arg(default_value_t = 50000)]
+    max_data_size: usize,
+
+    #[arg(default_value_t = 50000)]
+    max_output_size: usize,
 }
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Run brainfuck code(alias: b)
+    /// Run brainfuck code
     #[command(alias = "b")]
     Brainfuck {
         /// Input file (use - for stdin)
         file: String,
     },
-    /// Run ook code(alias: o)
+    /// Run ook code
     #[command(alias = "o")]
     Ook {
         /// Input file (use - for stdin)
         file: String,
     },
-    /// Run in short ook mode(alias: so)
+    /// Run in short ook mode
     #[command(alias = "so")]
     ShortOok {
         /// Input file (use - for stdin)
@@ -227,10 +236,12 @@ fn read_input(file_path: String) -> std::io::Result<String> {
 }
 
 fn main() {
-    env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
-    info!("Starting Brainfuck/Ook interpreter");
-
     let cli = Cli::parse();
+
+    env_logger::init_from_env(
+        env_logger::Env::default().default_filter_or(if cli.verbose { "trace" } else { "error" }),
+    );
+    info!("Starting Brainfuck/Ook interpreter");
 
     match cli.command {
         Commands::Brainfuck { file } => {
@@ -241,7 +252,8 @@ fn main() {
 
                     let bytecode = brainfuck_to_bytecode(&code);
 
-                    let mut interpreter = Intepreter::new(bytecode);
+                    let mut interpreter =
+                        Intepreter::new(bytecode, cli.max_data_size, cli.max_output_size);
                     let res = interpreter.run();
                     info!("Output:");
                     println!("{}", res);
@@ -255,7 +267,8 @@ fn main() {
                 Ok(code) => {
                     debug!("Code length: {}", code.len());
                     let bytecode = ook_to_bytecode(&code);
-                    let mut interpreter = Intepreter::new(bytecode);
+                    let mut interpreter =
+                        Intepreter::new(bytecode, cli.max_data_size, cli.max_output_size);
                     let res = interpreter.run();
                     info!("Output:");
                     println!("{}", res);
@@ -289,7 +302,8 @@ fn main() {
                         code = new_code;
                     }
                     let bytecode = parse_short_ook_commands(&code);
-                    let mut interpreter = Intepreter::new(bytecode);
+                    let mut interpreter =
+                        Intepreter::new(bytecode, cli.max_data_size, cli.max_output_size);
                     let res = interpreter.run();
                     info!("Output:");
                     println!("{}", res);
