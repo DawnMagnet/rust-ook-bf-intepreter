@@ -2,6 +2,17 @@
 
 [English](README.md) | [简体中文](README.zh.md)
 
+[![Crates.io][crates-badge]][crates-url]
+[![MIT licensed][mit-badge]][mit-url]
+[![Build Status][actions-badge]][actions-url]
+
+[crates-badge]: https://img.shields.io/crates/v/rob-vm.svg
+[crates-url]: https://crates.io/crates/rob-vm
+[mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[mit-url]: https://github.com/DawnMagnet/rust-ook-bf-intepreter/blob/master/LICENSE
+[actions-badge]: https://github.com/DawnMagnet/rust-ook-bf-intepreter/actions/workflows/build.yaml/badge.svg
+[actions-url]: https://github.com/DawnMagnet/rust-ook-bf-intepreter/actions
+
 一个快速高效的 Brainfuck 与 Ook 语言解释器，使用 Rust 编写。
 
 ## 特性
