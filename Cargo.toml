@@ -1,6 +1,6 @@
 [package]
 name = "rob-vm"
-version = "1.1.2"
+version = "1.2.0"
 edition = "2021"
 description = "A cmdline tools to run brainfuck & ook & shortook code"
 license = "MIT"
@@ -14,6 +14,7 @@ categories = ["development-tools", "command-line-utilities"]
 clap = { version = "4", features = ["derive"] }
 log = "0.4"
 env_logger = "0.11"
+clap_complete = "4.5.42"
 
 
 [lib]

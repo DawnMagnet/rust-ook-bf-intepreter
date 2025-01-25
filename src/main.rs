@@ -1,9 +1,11 @@
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
 use log::{debug, error, info};
 use std::fs;
 use std::path::Path;
 
 use rob::{brainfuck_to_bytecode, ook_to_bytecode, parse_short_ook_commands, Intepreter};
+
+use clap_complete::aot::{generate, Shell};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -44,6 +46,11 @@ enum Commands {
         #[arg(short, long)]
         mapping: Option<String>,
     },
+    #[command(alias = "c")]
+    Completion {
+        #[arg()]
+        shell: Shell,
+    },
 }
 
 fn read_input(file_path: String) -> std::io::Result<String> {
@@ -65,6 +72,9 @@ fn main() {
     info!("Starting Brainfuck/Ook interpreter");
 
     match cli.command {
+        Commands::Completion { shell } => {
+            generate(shell, &mut Cli::command(), "rob", &mut std::io::stdout());
+        }
         Commands::Brainfuck { file } => {
             info!("Running in brainfuck mode");
             match read_input(file) {
