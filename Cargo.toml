@@ -4,6 +4,11 @@ version = "1.1.1"
 edition = "2021"
 description = "A cmdline tools to run brainfuck & ook & shortook code"
 license = "MIT"
+authors = ["DawnMagnet"]
+repository = "https://github.com/DawnMagnet/rust-ook-bf-intepreter"
+readme = "README.md"
+keywords = ["brainfuck", "ook", "shortook", "interpreter", "cli", "rust"]
+categories = ["development-tools", "command-line-utilities"]
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
