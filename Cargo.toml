@@ -2,6 +2,8 @@
 name = "rob"
 version = "1.1.0"
 edition = "2021"
+description = "A cmdline tools to run brainfuck & ook & shortook code"
+license = "MIT"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
